@@ -1,0 +1,13 @@
+{
+  "name": "menubar-translate",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron dist/app.js"
+  },
+  "dependencies": {
+    "electron": "^7.1.2",
+    "typescript": "^3.7.2"
+  }
+}
