@@ -1,13 +1,40 @@
 {
   "name": "menubar-translate",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "start": "electron dist/app.js"
+    "start": "nodemon --watch src/main -e ts,tsx --exec 'electron app.js'",
+    "start-render-dev": "webpack-dev-server -r @babel/register --config configs/webpack.config.renderer.dev.js"
   },
   "dependencies": {
+    "@reach/router": "^1.2.1",
     "electron": "^7.1.2",
-    "typescript": "^3.7.2"
+    "electron-util": "^0.13.0",
+    "md5": "^2.2.1",
+    "react": "^16.12.0",
+    "react-desktop": "^0.3.9",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/preset-react": "^7.7.4",
+    "@babel/preset-typescript": "^7.7.4",
+    "@babel/register": "^7.7.4",
+    "@hot-loader/react-dom": "^16.11.0",
+    "@types/reach__router": "^1.2.6",
+    "@types/react": "^16.9.13",
+    "@types/react-dom": "^16.9.4",
+    "babel-loader": "^8.0.6",
+    "html-webpack-plugin": "^3.2.0",
+    "nodemon": "^2.0.1",
+    "react-hot-loader": "^4.12.18",
+    "ts-node": "^8.5.2",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0",
+    "webpack-merge": "^4.2.2"
   }
 }
