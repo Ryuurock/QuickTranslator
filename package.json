@@ -5,13 +5,14 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon --watch src/main -e ts,tsx --exec 'electron app.js'",
-    "start-render-dev": "webpack-dev-server -r @babel/register --config configs/webpack.config.renderer.dev.js"
+    "start-render": "webpack-dev-server -r @babel/register --config configs/webpack.config.renderer.dev.js"
   },
   "dependencies": {
     "@reach/router": "^1.2.1",
     "electron": "^7.1.2",
     "electron-util": "^0.13.0",
     "md5": "^2.2.1",
+    "query-string": "^6.9.0",
     "react": "^16.12.0",
     "react-desktop": "^0.3.9",
     "react-dom": "^16.12.0"
@@ -27,9 +28,11 @@
     "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
     "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
     "html-webpack-plugin": "^3.2.0",
     "nodemon": "^2.0.1",
     "react-hot-loader": "^4.12.18",
+    "style-loader": "^1.0.0",
     "ts-node": "^8.5.2",
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",

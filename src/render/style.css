@@ -1,0 +1,15 @@
+html, body {
+  height: 100%;
+  background: #ececec;
+  letter-spacing: 0.5px;
+}
+* {
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  font-size: 11px;
+  color: #06c;
+}

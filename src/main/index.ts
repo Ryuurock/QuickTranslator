@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { is } from 'electron-util';
-import { app, Tray, clipboard, dialog, BrowserWindow } from 'electron';
+import { app, Tray, clipboard, BrowserWindow, ipcMain } from 'electron';
 
 function start() {
   const tray = new Tray(path.join(process.cwd(), 'static/icon@3x.png'));
@@ -19,20 +19,39 @@ function start() {
 function checkConfig() {
   const userConfigPath = `${app.getPath('userData')}/config.json`;
   if (!fs.existsSync(userConfigPath)) {
+
     const window = new BrowserWindow({
       show: true,
-      width: 380,
+      width: 498,
       height: 240,
+      title: '提示',
+      maximizable: false,
+      minimizable: false,
       webPreferences: {
         nodeIntegration: true
       }
     });
 
+    window.webContents.openDevTools();
+
     window.loadURL(is.development ? `http://127.0.0.1:${process.env.PORT || 1212}/dist/` : '');
+
+    window.on('close', () => {
+      if (!fs.existsSync(userConfigPath)) {
+        app.quit();
+      }
+    });
 
     window.webContents.on('did-finish-load', () => {
       window.show();
       window.focus();
+    });
+
+    console.log(userConfigPath)
+
+    ipcMain.on('submit-type-token', (_, token) => {
+      fs.writeFileSync(userConfigPath, JSON.stringify(token));
+      window.close();
     });
   }
 }

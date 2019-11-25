@@ -1,7 +1,28 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { Dialog, Button, TextInput } from 'react-desktop/macOs';
 
+import style from './styles.css';
+import { remote, ipcRenderer, ipcMain } from 'electron';
+
 export const TypeToken: React.FC<{ path?: string }> = () => {
+  const [state, setState] = useState<{ appId?: string, token?: string }>({ appId: '', token: '' });
+
+  const handleChange = useCallback((type: string) => (e: any) => {
+    setState({
+      ...state,
+      [type]: e.target.value.trim(),
+    });
+  }, [state]);
+
+  const handleClose = useCallback(() => {
+    remote.getCurrentWindow().close();
+  }, []);
+
+  const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    ipcRenderer.send('submit-type-token', state);
+  }, [state]);
+
   return (
     <Dialog
       icon={
@@ -11,16 +32,44 @@ export const TypeToken: React.FC<{ path?: string }> = () => {
           height="52"
         />
       }
-      title="该应用使用了百度翻译开放平台，请填入以下内容确保正常使用。"
+      title="输入信息以继续"
       message={(
-        <form>
-          <TextInput label="APP ID：" marginBottom="10px" placeholder="请输入APP ID" />
-          <TextInput label="密钥：" placeholder="请输入密钥" />
+        <form onSubmit={handleSubmit} id="type-token">
+          <div style={{ fontSize: 10, marginBottom: 12 }}>该应用使用了百度翻译开放平台，请填入以下内容确保正常使用。</div>
+          <div className={style.formItem}>
+            <div className={style.formItemLable}>APP ID：</div>
+            <div>
+              <TextInput
+                marginBottom="10px"
+                value={state.appId}
+                placeholder="必填"
+                onChange={handleChange('appId')}
+                width="208"
+              />
+            </div>
+          </div>
+          <div className={style.formItem}>
+            <div className={style.formItemLable}>密钥：</div>
+            <div>
+              <TextInput
+                value={state.token}
+                placeholder="必填"
+                onChange={handleChange('token')}
+                width="208"
+              />
+            </div>
+          </div>
+          <p style={{ marginTop: 20 }}><a href="#">查看如何获取以上信息</a></p>
         </form>
       )}
       buttons={[
-        <Button onClick={() => console.log('close this dialog')}>取消</Button>,
-        <Button color="blue" type="submit" onClick={() => console.log('submit this dialog')}>提交</Button>,
+        <Button onClick={handleClose}>取消</Button>,
+        <Button
+          form="type-token"
+          color="blue"
+          type="submit"
+          disabled={!(state.appId && state.token)}
+        >提交</Button>,
       ]}
     />
   );

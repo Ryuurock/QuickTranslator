@@ -22,11 +22,11 @@ process.env.PORT = port;
 const publicPath = `http://localhost:${port}/dist`;
 
 export default merge.smart(baseConfig, {
-  devtool: 'inline-source-map',
+  devtool: 'cheap-eval-source-map',
 
   mode: 'development',
 
-  // target: 'electron-renderer',
+  target: 'electron-renderer',
 
   entry: [
     // 'react-hot-loader/patch',

@@ -7,7 +7,8 @@ import webpack from 'webpack';
 import { dependencies as externals } from '../package.json';
 
 export default {
-  externals: [...Object.keys(externals || {})],
+  // externals: [...Object.keys(externals || {})],
+  // externals: ['electron'],
 
   module: {
     rules: [
