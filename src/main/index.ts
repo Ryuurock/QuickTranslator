@@ -1,7 +1,9 @@
 import path from 'path';
 import fs from 'fs';
 import { is } from 'electron-util';
-import { app, Tray, clipboard, BrowserWindow, ipcMain } from 'electron';
+import { app, Tray, clipboard, BrowserWindow, ipcMain, webContents } from 'electron';
+
+const userConfigPath = `${app.getPath('userData')}/config.json`;
 
 function start() {
   const tray = new Tray(path.join(process.cwd(), 'static/icon@3x.png'));
@@ -17,11 +19,10 @@ function start() {
 }
 
 function checkConfig() {
-  const userConfigPath = `${app.getPath('userData')}/config.json`;
   if (!fs.existsSync(userConfigPath)) {
 
     const window = new BrowserWindow({
-      show: true,
+      show: false,
       width: 498,
       height: 240,
       title: '提示',
@@ -32,7 +33,7 @@ function checkConfig() {
       }
     });
 
-    window.webContents.openDevTools();
+    // window.webContents.openDevTools();
 
     window.loadURL(is.development ? `http://127.0.0.1:${process.env.PORT || 1212}/dist/` : '');
 
@@ -41,19 +42,21 @@ function checkConfig() {
         app.quit();
       }
     });
-
-    window.webContents.on('did-finish-load', () => {
-      window.show();
-      window.focus();
-    });
-
-    console.log(userConfigPath)
-
-    ipcMain.on('submit-type-token', (_, token) => {
-      fs.writeFileSync(userConfigPath, JSON.stringify(token));
-      window.close();
-    });
   }
+}
+
+function initIpcMain() {
+  ipcMain
+    .on('submit-type-token', (_, token) => {
+      fs.writeFileSync(userConfigPath, JSON.stringify(token));
+      BrowserWindow.fromWebContents(_.sender).close();
+      app.dock.hide();
+    })
+    .on('react-did-mounted', (_) => {
+      const currentWindow = BrowserWindow.fromWebContents(_.sender);
+      currentWindow.show();
+      currentWindow.focus();
+    });
 }
 
 // Don't quit app when closing any spawned windows
@@ -62,8 +65,7 @@ app.on('window-all-closed', (e: Event) => {
 });
 
 app.on('ready', () => {
+  initIpcMain();
   checkConfig();
   start();
 });
-
-// app.dock.hide();

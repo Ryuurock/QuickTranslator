@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { remote, ipcRenderer } from 'electron';
 import { Dialog, Button, TextInput } from 'react-desktop/macOs';
 
 import style from './styles.css';
-import { remote, ipcRenderer, ipcMain } from 'electron';
 
 export const TypeToken: React.FC<{ path?: string }> = () => {
   const [state, setState] = useState<{ appId?: string, token?: string }>({ appId: '', token: '' });
@@ -22,6 +22,10 @@ export const TypeToken: React.FC<{ path?: string }> = () => {
     e.preventDefault();
     ipcRenderer.send('submit-type-token', state);
   }, [state]);
+
+  useEffect(() => {
+    ipcRenderer.send('react-did-mounted');
+  });
 
   return (
     <Dialog
