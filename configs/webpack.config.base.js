@@ -9,6 +9,7 @@ import { dependencies as externals } from '../package.json';
 export default {
   // externals: [...Object.keys(externals || {})],
   // externals: ['electron'],
+  target: 'electron-renderer',
 
   module: {
     rules: [

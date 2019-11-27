@@ -5,7 +5,7 @@ import { Dialog, Button, TextInput } from 'react-desktop/macOs';
 import style from './styles.css';
 
 export const TypeToken: React.FC<{ path?: string }> = () => {
-  const [state, setState] = useState<{ appId?: string, token?: string }>({ appId: '', token: '' });
+  const [state, setState] = useState<IUserConfig>({ appId: '', token: '' });
 
   const handleChange = useCallback((type: string) => (e: any) => {
     setState({

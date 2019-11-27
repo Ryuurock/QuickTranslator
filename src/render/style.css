@@ -13,3 +13,7 @@ a {
   font-size: 11px;
   color: #06c;
 }
+
+:global(#root) {
+  overflow: hidden;
+}
