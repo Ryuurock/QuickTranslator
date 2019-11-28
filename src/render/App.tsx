@@ -1,14 +1,16 @@
 import React from 'react';
-import { Router } from '@reach/router';
+import { Route, Switch, HashRouter as Router } from 'react-router-dom';
 import { TypeToken } from './pages';
 
 const App: React.FC = () => {
   return (
-    <>
-      <Router basepath="dist">
-        <TypeToken path="/" />
-      </Router>
-    </>
+    <Router>
+      <Switch>
+        <Route path="/">
+          <TypeToken />
+        </Route>
+      </Switch>
+    </Router>
   );
 };
 

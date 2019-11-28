@@ -13,6 +13,7 @@ lib
 /build
 /siteApp
 /dist
+/release
 
 # misc
 .DS_Store

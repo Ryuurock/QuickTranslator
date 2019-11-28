@@ -4,12 +4,23 @@
 
 import path from 'path';
 import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { dependencies as externals } from '../package.json';
+
+
+function getENVStyleLoader() {
+  return process.env.NODE_ENV === 'development' ? 'style-loader' : MiniCssExtractPlugin.loader;
+}
 
 export default {
   // externals: [...Object.keys(externals || {})],
-  // externals: ['electron'],
+
   target: 'electron-renderer',
+
+  node: {
+    __dirname: false,
+  },
 
   module: {
     rules: [
@@ -27,7 +38,7 @@ export default {
         test: /\.global\.css$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: getENVStyleLoader()
           },
           {
             loader: 'css-loader',
@@ -41,7 +52,7 @@ export default {
         test: /^((?!\.global).)*\.css$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: getENVStyleLoader()
           },
           {
             loader: 'css-loader',
@@ -60,7 +71,7 @@ export default {
         test: /\.global\.(scss|sass)$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: getENVStyleLoader()
           },
           {
             loader: 'css-loader',
@@ -78,7 +89,7 @@ export default {
         test: /^((?!\.global).)*\.(scss|sass)$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: getENVStyleLoader()
           },
           {
             loader: 'css-loader',
@@ -153,8 +164,8 @@ export default {
   },
 
   output: {
-    path: path.join(__dirname, '..', 'dist'),
     // https://github.com/webpack/webpack/issues/1114
+    libraryTarget: 'commonjs2'
   },
 
   /**
@@ -170,5 +181,9 @@ export default {
     }),
 
     new webpack.NamedModulesPlugin(),
+
+    new HtmlWebpackPlugin({
+      template: 'static/index.html'
+    }),
   ]
 };

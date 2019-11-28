@@ -21,7 +21,7 @@ enum ShowType {
 }
 
 function initTray() {
-  tray = new Tray(path.join(process.cwd(), 'static/icon@3x.png'));
+  tray = new Tray(path.join(__dirname, is.development ? '../../' : '../', '/static/icon@3x.png'));
 
   const menuBarType = userConfig.showType === undefined;
 
@@ -58,10 +58,10 @@ function start() {
   clearInterval(setIntervalTimer);
 
   setIntervalTimer = setInterval(() => {
-    const newclipboard = clipboard.readText().trim();
-    if (newclipboard !== curClipboard) {
-      curClipboard = newclipboard;
-      translate(newclipboard).then(({ trans_result }) => {
+    const newClipboardText = clipboard.readText().trim();
+    if (newClipboardText !== curClipboard) {
+      curClipboard = newClipboardText;
+      translate(newClipboardText).then(({ trans_result }) => {
         if (trans_result) {
           const result = trans_result.map(({ dst }) => dst).join('').replace(/\n/g, '');
           if (userConfig.showType === ShowType.NOTIFICATION) {
@@ -107,7 +107,7 @@ function showDialog() {
 
   // window.webContents.openDevTools();
 
-  window.loadURL(is.development ? `http://127.0.0.1:${process.env.PORT || 1212}/dist/` : '');
+  window.loadURL(is.development ? `http://127.0.0.1:${process.env.PORT || 1212}` : `file://${__dirname}/index.html`);
 
   window.on('close', () => {
     if (!fs.existsSync(userConfigPath)) {

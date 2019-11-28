@@ -7,16 +7,12 @@
  * https://webpack.js.org/concepts/hot-module-replacement/
  */
 
-import path from 'path';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import baseConfig from './webpack.config.base';
 
 const port = process.env.PORT || 1212;
 process.env.PORT = port;
-
-const publicPath = `http://localhost:${port}/dist`;
 
 export default merge.smart(baseConfig, {
   devtool: 'cheap-eval-source-map',
@@ -24,13 +20,13 @@ export default merge.smart(baseConfig, {
   mode: 'development',
 
   entry: [
-    // 'react-hot-loader/patch',
-    // 'webpack/hot/only-dev-server',
+    'react-hot-loader/patch',
+    'webpack/hot/only-dev-server',
     require.resolve('../src/render/index.tsx')
   ],
 
   output: {
-    publicPath: '',
+    publicPath: '/',
     filename: 'renderer.dev.js'
   },
 
@@ -61,15 +57,10 @@ export default merge.smart(baseConfig, {
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),
-
-    new HtmlWebpackPlugin({
-      template: 'static/index.html'
-    }),
   ],
 
   devServer: {
     port,
-    publicPath,
     compress: true,
     // noInfo: true,
     stats: 'errors-only',
@@ -77,6 +68,11 @@ export default merge.smart(baseConfig, {
     lazy: false,
     hot: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
-    contentBase: path.join(__dirname, 'dist'),
+    before() {
+      require('child_process').spawn('yarn', ['start:main'], {
+        env: process.env,
+        stdio: 'inherit'
+      })
+    }
   }
 });

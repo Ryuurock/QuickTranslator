@@ -1,22 +1,58 @@
 {
   "name": "menubar-translate",
-  "version": "1.0.0",
-  "main": "app.js",
+  "version": "0.0.1",
+  "main": "dist/main.js",
+  "description": "菜单栏和系统通知翻译，免打开app",
+  "author": {
+    "name": "Ryuurock",
+    "email": "lwx_1993@outlook.com",
+    "url": "https://ryuurock.com"
+  },
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --watch src/main -e ts,tsx --exec 'electron app.js'",
-    "start-render": "webpack-dev-server -r @babel/register --config configs/webpack.config.renderer.dev.js"
+    "start:main": "nodemon --watch src/main -e ts,tsx --exec 'electron app.js'",
+    "start": "cross-env NODE_ENV=development webpack-dev-server -r @babel/register --config configs/webpack.config.renderer.dev.js",
+    "build:render": "cross-env NODE_ENV=production webpack -r @babel/register --config configs/webpack.config.renderer.prod.js",
+    "build:main": "webpack -r @babel/register --config configs/webpack.config.main.prod.js",
+    "postinstall": "electron-builder install-app-deps",
+    "package:mac": "yarn build:render && yarn build:main && electron-builder build --mac"
+  },
+  "build": {
+    "productName": "讯译",
+    "appId": "com.ryuurock.QuickTranslator",
+    "files": [
+      "dist",
+      "static",
+      "resources"
+    ],
+    "directories": {
+      "buildResources": "resources",
+      "output": "release/production/macos/"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
   },
   "dependencies": {
-    "@reach/router": "^1.2.1",
     "axios": "^0.19.0",
-    "electron": "^7.1.2",
     "electron-util": "^0.13.0",
     "md5": "^2.2.1",
     "query-string": "^6.9.0",
     "react": "^16.12.0",
     "react-desktop": "^0.3.9",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "react-router-dom": "^5.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
@@ -29,12 +65,19 @@
     "@types/reach__router": "^1.2.6",
     "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
+    "@types/react-router-dom": "^5.1.3",
     "babel-loader": "^8.0.6",
+    "cross-env": "^6.0.3",
     "css-loader": "^3.2.0",
+    "electron": "^7.1.2",
+    "electron-builder": "^21.2.0",
     "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
     "nodemon": "^2.0.1",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
     "react-hot-loader": "^4.12.18",
     "style-loader": "^1.0.0",
+    "terser-webpack-plugin": "^2.2.1",
     "ts-node": "^8.5.2",
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",
