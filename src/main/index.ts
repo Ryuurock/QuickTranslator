@@ -1,11 +1,12 @@
 /// <reference path="../../typings/interface.d.ts" />
 
 import path from 'path';
+import qs from 'query-string';
 import fs from 'fs';
 import md5 from 'md5';
 import axios from 'axios';
 import { is } from 'electron-util';
-import { app, Tray, clipboard, BrowserWindow, ipcMain, Notification, Menu } from 'electron';
+import { app, Tray, clipboard, BrowserWindow, ipcMain, Notification, Menu, dialog, BrowserWindowConstructorOptions } from 'electron';
 
 const API_PATH = 'https://fanyi-api.baidu.com/api/trans/vip/translate';
 
@@ -19,6 +20,40 @@ enum ShowType {
   MENUBAR = 'menuBar',
   NOTIFICATION = 'notification',
 }
+
+enum WindowTitle {
+  EditConfig = '编辑配置信息',
+}
+
+const ErrorText: {
+  [key in string]: {
+    title: string,
+    message?: string,
+  }
+} = {
+  52001: {
+    title: '请求超时',
+  },
+  52002: {
+    title: '系统错误',
+  },
+  52003: {
+    title: '未授权用户',
+    message: '检查您的 appid 是否正确，或者服务是否开通',
+  },
+  54003: {
+    title: '访问频率受限',
+    message: '您的请求频率过快，请降低翻译请求频率',
+  },
+  58002: {
+    title: '服务当前已关闭',
+    message: '请前往管理控制台开启服务',
+  },
+  90107: {
+    title: '认证未通过或未生效',
+    message: '请前往百度翻译开放平台查看认证进度',
+  },
+};
 
 function initTray() {
   tray = new Tray(path.join(__dirname, is.development ? '../../' : '../', '/static/icon@3x.png'));
@@ -47,12 +82,22 @@ function initTray() {
 
   const contextMenu = Menu.buildFromTemplate([
     { label: '翻译展示方式', submenu },
-    { role: 'close', label: '退出' }
+    { label: '修改APP ID', click: () => {
+      showDialog({ param: userConfig });
+    } },
+    { type: 'separator' },
+    { label: '检查更新' },
+    { label: '反馈' },
+    { type: 'separator' },
+    { label: '退出', click: () => {
+      app.quit();
+    } }
   ])
   tray.setContextMenu(contextMenu);
 }
 
 function start() {
+  app.dock.hide();
   let curClipboard = clipboard.readText().trim();
 
   clearInterval(setIntervalTimer);
@@ -61,7 +106,7 @@ function start() {
     const newClipboardText = clipboard.readText().trim();
     if (newClipboardText !== curClipboard) {
       curClipboard = newClipboardText;
-      translate(newClipboardText).then(({ trans_result }) => {
+      translate(newClipboardText, (trans_result) => {
         if (trans_result) {
           const result = trans_result.map(({ dst }) => dst).join('').replace(/\n/g, '');
           if (userConfig.showType === ShowType.NOTIFICATION) {
@@ -83,37 +128,76 @@ function start() {
  * 翻译
  * @param conditionText 待翻译文本
  */
-function translate(conditionText: string) {
+async function translate(conditionText: string, callback: (trans_result: IBaiduResponse['trans_result']) => void) {
   const { appId, token } = userConfig;
   const salt = Date.now();
   const sign = md5(`${appId}${conditionText}${salt}${token}`);
-  return axios.get<IBaiduResponse>(`${API_PATH}?q=${encodeURIComponent(conditionText)}&from=auto&to=zh&appid=${appId}&salt=${salt}&sign=${sign}`)
-    .then(({ data }) => data);
+  console.time('用时')
+  const data = await axios.get<IBaiduResponse>(`${API_PATH}?q=${encodeURIComponent(conditionText)}&from=auto&to=zh&appid=${appId}&salt=${salt}&sign=${sign}`)
+  .then(({ data }) => data);
+  console.timeEnd('用时')
+
+  const { error_code, trans_result }  = data;
+
+  if (!error_code) {
+    callback(trans_result);
+  } else {
+    const error = ErrorText[error_code];
+    if (error) {
+      const messageBox = dialog.showMessageBox({
+        title: error.title,
+        message: error.message || '',
+        type: 'error'
+      });
+      if (error_code === '52003') {
+        messageBox.then(() => {
+          showDialog({ param: userConfig });
+        });
+      }
+    }
+  }
 }
 
-function showDialog() {
-  const window = new BrowserWindow({
+function showDialog(param?: { path?: string, param?: any }, windowOption?: BrowserWindowConstructorOptions) {
+  const defaultParam = Object.assign({}, {
+    path: '/',
+    param: {},
+  }, param);
+
+  const defaultWindowOption = {
     show: false,
     width: 498,
     height: 242,
     resizable: false,
-    title: '提示',
+    title: WindowTitle.EditConfig,
     maximizable: false,
     minimizable: false,
     webPreferences: {
       nodeIntegration: true
-    }
-  });
+    },
+    ...windowOption
+  };
+  
+  const maybeCreated = BrowserWindow.getAllWindows().find((win) => win.getTitle() === defaultWindowOption.title)
 
-  // window.webContents.openDevTools();
+  if (maybeCreated) {
+    maybeCreated.focus();
+  } else {
+    const window = new BrowserWindow(defaultWindowOption);
 
-  window.loadURL(is.development ? `http://127.0.0.1:${process.env.PORT || 1212}` : `file://${__dirname}/index.html`);
+    // window.webContents.openDevTools();
 
-  window.on('close', () => {
-    if (!fs.existsSync(userConfigPath)) {
-      app.quit();
-    }
-  });
+    const path = is.development ? `http://127.0.0.1:${process.env.PORT || 1212}` : `file://${__dirname}/index.html`;
+  
+    window.loadURL(`${path}#${defaultParam.path}?${qs.stringify(defaultParam.param)}`);
+  
+    window.on('close', () => {
+      if (!fs.existsSync(userConfigPath)) {
+        app.quit();
+      }
+    });
+  }
+
 }
 
 function checkConfig() {
@@ -139,7 +223,6 @@ function initIpcMain() {
     .on('submit-type-token', (_, token: IUserConfig) => {
       saveConfig(token);
       BrowserWindow.fromWebContents(_.sender).close();
-      app.dock.hide();
       start();
     })
     .on('react-did-mounted', (_) => {

@@ -11,5 +11,5 @@ interface IBaiduResponse {
     src: string,
     dst: string,
   }>,
-  error_code?: number,
+  error_code?: string,
 }

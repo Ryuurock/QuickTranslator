@@ -1,11 +1,15 @@
+import qs from 'query-string';
+import { useLocation } from 'react-router-dom';
+import { remote, ipcRenderer, shell } from 'electron';
 import React, { useState, useCallback, useEffect } from 'react';
-import { remote, ipcRenderer } from 'electron';
 import { Dialog, Button, TextInput } from 'react-desktop/macOs';
 
 import style from './styles.css';
 
 export const TypeToken: React.FC<{ path?: string }> = () => {
-  const [state, setState] = useState<IUserConfig>({ appId: '', token: '' });
+  const { search } = useLocation();
+  const searchParsed = qs.parse(search);
+  const [state, setState] = useState<IUserConfig>(searchParsed.appId && searchParsed.token ? searchParsed : { appId: '', token: '' });
 
   const handleChange = useCallback((type: string) => (e: any) => {
     setState({
@@ -63,7 +67,11 @@ export const TypeToken: React.FC<{ path?: string }> = () => {
               />
             </div>
           </div>
-          <p style={{ marginTop: 20 }}><a href="#">查看如何获取以上信息</a></p>
+          <p style={{ marginTop: 20 }}>
+            <a href="javascript: void(0)" onClick={() => shell.openExternal('http://api.fanyi.baidu.com/api/trans/product/prodinfo')}>
+              去获取以上信息
+            </a>
+          </p>
         </form>
       )}
       buttons={[
