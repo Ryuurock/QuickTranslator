@@ -1,12 +1,17 @@
 /// <reference path="../../typings/interface.d.ts" />
 
 import path from 'path';
+import { autoUpdater } from 'electron-updater';
 import qs from 'query-string';
 import fs from 'fs';
 import md5 from 'md5';
 import axios from 'axios';
 import { is } from 'electron-util';
 import { app, Tray, clipboard, BrowserWindow, ipcMain, Notification, Menu, dialog, BrowserWindowConstructorOptions, shell } from 'electron';
+
+autoUpdater.on('download-progress', (e) => {
+  console.log('progress', e);
+})
 
 const API_PATH = 'https://fanyi-api.baidu.com/api/trans/vip/translate';
 
@@ -85,7 +90,18 @@ function initTray() {
       showDialog({ param: userConfig });
     } },
     { type: 'separator' },
-    { label: '检查更新' },
+    {
+      label: '检查更新', click: (e) => {
+        autoUpdater.checkForUpdatesAndNotify();
+        autoUpdater
+          .once('update-not-available', (e) => {
+            dialog.showMessageBox({ message: '暂时没有可用的更新。' });
+          })
+          .once('update-available', (e) => {
+            dialog.showMessageBox({ message: '检测到更新，自动下载中。' });
+          })
+      }
+    },
     { label: '反馈', click: () => {
       shell.openExternal('https://github.com/Ryuurock/menubar-translate/issues')
     } },
@@ -133,7 +149,7 @@ async function baiduTranslate(conditionText: string, callback: (trans_result: st
   const sign = md5(`${appId}${conditionText}${salt}${token}`);
   console.time('用时')
   const data = await axios.get<IBaiduResponse>(`${API_PATH}?q=${encodeURIComponent(conditionText)}&from=auto&to=zh&appid=${appId}&salt=${salt}&sign=${sign}`)
-  .then(({ data }) => data);
+    .then(({ data }) => data);
   console.timeEnd('用时')
 
   const { error_code, trans_result }  = data;
@@ -186,6 +202,7 @@ function showDialog(param?: { path?: string, param?: any }, windowOption?: Brows
   const maybeCreated = BrowserWindow.getAllWindows().find((win) => win.getTitle() === defaultWindowOption.title)
 
   if (maybeCreated) {
+    maybeCreated.show();
     maybeCreated.focus();
   } else {
     const window = new BrowserWindow(defaultWindowOption);
@@ -207,13 +224,14 @@ function showDialog(param?: { path?: string, param?: any }, windowOption?: Brows
 
 function checkConfig() {
   try {
-    userConfig = require(userConfigPath);
+    userConfig = JSON.parse(fs.readFileSync(userConfigPath).toString());
     if (!userConfig.appId || !userConfig.token) {
       showDialog();
     } else {
       start();
     }
   } catch (e) {
+    console.log('err:', e)
     showDialog();
   }
 }

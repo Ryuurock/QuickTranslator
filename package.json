@@ -1,6 +1,6 @@
 {
-  "name": "menubar-translate",
-  "version": "0.0.1",
+  "name": "quick-translator",
+  "version": "0.1.0",
   "main": "dist/main.js",
   "description": "菜单栏和系统通知翻译，免打开app",
   "author": {
@@ -42,10 +42,17 @@
           "path": "/Applications"
         }
       ]
+    },
+    "artifactName": "quick-translator_${version}.${ext}",
+    "publish": {
+      "provider": "github",
+      "owner": "Ryuurock",
+      "repo": "menubar-translate"
     }
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "electron-updater": "^4.2.0",
     "electron-util": "^0.13.0",
     "md5": "^2.2.1",
     "query-string": "^6.9.0",
