@@ -10,7 +10,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "start:main": "nodemon --watch src/main -e ts,tsx --exec 'electron app.js'",
+    "start:main": "nodemon --watch src/main -e ts,tsx --exec \"electron app.js\"",
     "start": "cross-env NODE_ENV=development webpack-dev-server -r @babel/register --config configs/webpack.config.renderer.dev.js",
     "build:render": "cross-env NODE_ENV=production webpack -r @babel/register --config configs/webpack.config.renderer.prod.js",
     "build:main": "webpack -r @babel/register --config configs/webpack.config.main.prod.js",

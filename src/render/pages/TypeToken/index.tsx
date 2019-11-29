@@ -6,7 +6,7 @@ import { Dialog, Button, TextInput } from 'react-desktop/macOs';
 
 import style from './styles.css';
 
-export const TypeToken: React.FC<{ path?: string }> = () => {
+export const TypeToken: React.FC = () => {
   const { search } = useLocation();
   const searchParsed = qs.parse(search);
   const [state, setState] = useState<IUserConfig>(searchParsed.appId && searchParsed.token ? searchParsed : { appId: '', token: '' });

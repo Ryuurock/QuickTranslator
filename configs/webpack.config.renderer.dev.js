@@ -1,14 +1,6 @@
-/* eslint global-require: off, import/no-dynamic-require: off */
-
-/**
- * Build config for development electron renderer process that uses
- * Hot-Module-Replacement
- *
- * https://webpack.js.org/concepts/hot-module-replacement/
- */
-
 import webpack from 'webpack';
 import merge from 'webpack-merge';
+import { spawn } from 'child_process';
 import baseConfig from './webpack.config.base';
 
 const port = process.env.PORT || 1212;
@@ -69,10 +61,10 @@ export default merge.smart(baseConfig, {
     hot: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
     before() {
-      require('child_process').spawn('yarn', ['start:main'], {
+      spawn(process.platform === 'win32' ? 'yarn.cmd' : 'yarn', ['start:main'], {
         env: process.env,
         stdio: 'inherit'
-      })
+      });
     }
   }
 });

@@ -6,7 +6,7 @@ import fs from 'fs';
 import md5 from 'md5';
 import axios from 'axios';
 import { is } from 'electron-util';
-import { app, Tray, clipboard, BrowserWindow, ipcMain, Notification, Menu, dialog, BrowserWindowConstructorOptions } from 'electron';
+import { app, Tray, clipboard, BrowserWindow, ipcMain, Notification, Menu, dialog, BrowserWindowConstructorOptions, shell } from 'electron';
 
 const API_PATH = 'https://fanyi-api.baidu.com/api/trans/vip/translate';
 
@@ -15,6 +15,8 @@ const userConfigPath = `${app.getPath('userData')}/config.json`;
 let userConfig: IUserConfig = {};
 let setIntervalTimer: NodeJS.Timeout;
 let tray: Tray;
+
+let retryCount = 0;
 
 enum ShowType {
   MENUBAR = 'menuBar',
@@ -31,9 +33,6 @@ const ErrorText: {
     message?: string,
   }
 } = {
-  52001: {
-    title: '请求超时',
-  },
   52002: {
     title: '系统错误',
   },
@@ -87,7 +86,9 @@ function initTray() {
     } },
     { type: 'separator' },
     { label: '检查更新' },
-    { label: '反馈' },
+    { label: '反馈', click: () => {
+      shell.openExternal('https://github.com/Ryuurock/menubar-translate/issues')
+    } },
     { type: 'separator' },
     { label: '退出', click: () => {
       app.quit();
@@ -106,18 +107,16 @@ function start() {
     const newClipboardText = clipboard.readText().trim();
     if (newClipboardText !== curClipboard) {
       curClipboard = newClipboardText;
-      translate(newClipboardText, (trans_result) => {
-        if (trans_result) {
-          const result = trans_result.map(({ dst }) => dst).join('').replace(/\n/g, '');
-          if (userConfig.showType === ShowType.NOTIFICATION) {
-            new Notification({
-              title: '翻译结果',
-              body: result,
-              silent: false,
-            }).show();
-          } else {
-            tray.setTitle(result.length > 15 ? `${result.substr(0, 15)}...` : result);
-          }
+      retryCount = 0;
+      baiduTranslate(newClipboardText, (result) => {
+        if (userConfig.showType === ShowType.NOTIFICATION) {
+          new Notification({
+            title: '翻译结果',
+            body: result,
+            silent: false,
+          }).show();
+        } else {
+          tray.setTitle(result.length > 15 ? `${result.substr(0, 15)}...` : result);
         }
       });
     }
@@ -128,7 +127,7 @@ function start() {
  * 翻译
  * @param conditionText 待翻译文本
  */
-async function translate(conditionText: string, callback: (trans_result: IBaiduResponse['trans_result']) => void) {
+async function baiduTranslate(conditionText: string, callback: (trans_result: string) => void) {
   const { appId, token } = userConfig;
   const salt = Date.now();
   const sign = md5(`${appId}${conditionText}${salt}${token}`);
@@ -140,7 +139,7 @@ async function translate(conditionText: string, callback: (trans_result: IBaiduR
   const { error_code, trans_result }  = data;
 
   if (!error_code) {
-    callback(trans_result);
+    trans_result && callback(trans_result.map(({ dst }) => dst).join('').replace(/\n/g, ''));
   } else {
     const error = ErrorText[error_code];
     if (error) {
@@ -154,6 +153,12 @@ async function translate(conditionText: string, callback: (trans_result: IBaiduR
           showDialog({ param: userConfig });
         });
       }
+    }
+
+    if (error_code === '52001' && retryCount < 3) {
+      // 翻译超时，重试
+      baiduTranslate(conditionText, callback);
+      retryCount += 1;
     }
   }
 }
