@@ -13,8 +13,8 @@ function getENVStyleLoader() {
   return process.env.NODE_ENV === 'development' ? 'style-loader' : MiniCssExtractPlugin.loader;
 }
 
-export default {
-  // externals: [...Object.keys(externals || {})],
+const config: webpack.Configuration = {
+  externals: [...Object.keys(externals || {})],
 
   target: 'electron-renderer',
 
@@ -190,3 +190,5 @@ export default {
     }),
   ]
 };
+
+export default config;

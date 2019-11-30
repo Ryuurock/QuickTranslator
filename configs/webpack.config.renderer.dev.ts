@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
 import baseConfig from './webpack.config.base';
 
 const port = process.env.PORT || 1212;
-process.env.PORT = port;
+process.env.PORT = `${port}`;
 
 export default merge.smart(baseConfig, {
   devtool: 'cheap-eval-source-map',
@@ -51,6 +51,7 @@ export default merge.smart(baseConfig, {
     }),
   ],
 
+  // @ts-ignore
   devServer: {
     port,
     compress: true,
