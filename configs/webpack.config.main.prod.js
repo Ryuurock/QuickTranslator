@@ -3,6 +3,10 @@ import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import { dependencies as externals } from '../package.json';
 
+if (!process.env.GH_TOKEN) {
+  throw new Error('未配置【GH_TOKEN】');
+}
+
 export default merge.smart({}, {
   externals: [...Object.keys(externals || {})],
 

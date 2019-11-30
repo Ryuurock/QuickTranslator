@@ -271,4 +271,6 @@ app.on('ready', () => {
   checkConfig();
   initTray();
   initIpcMain();
+
+  autoUpdater.checkForUpdatesAndNotify();
 });
