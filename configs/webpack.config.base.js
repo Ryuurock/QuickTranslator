@@ -173,6 +173,9 @@ export default {
    */
   resolve: {
     extensions: ['.js', '.tsx', '.ts', '.jsx'],
+    alias: {
+      '@': path.join(__dirname, '..'),
+    },
   },
 
   plugins: [
