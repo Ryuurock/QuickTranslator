@@ -9,9 +9,13 @@ import axios from 'axios';
 import { is } from 'electron-util';
 import { app, Tray, clipboard, BrowserWindow, ipcMain, Notification, Menu, dialog, BrowserWindowConstructorOptions, shell } from 'electron';
 
-autoUpdater.on('download-progress', (e) => {
-  console.log('progress', e);
-})
+autoUpdater
+  .on('download-progress', (e) => {
+    console.log('progress', e);
+  })
+  .on('update-downloaded', () => {
+    autoUpdater.quitAndInstall();
+  })
 
 const API_PATH = 'https://fanyi-api.baidu.com/api/trans/vip/translate';
 
@@ -106,12 +110,15 @@ function initTray() {
             dialog.showMessageBox({ message: '暂时没有可用的更新。' });
           })
           .once('update-available', (e) => {
-            dialog.showMessageBox({ message: '检测到更新，自动下载中。' });
+            dialog.showMessageBox({ message: '检测到更新，自动下载中，下载完成将自动重启应用。' });
           })
       }
     },
     { label: '反馈', click: () => {
-      shell.openExternal('https://github.com/Ryuurock/menubar-translate/issues')
+      shell.openExternal('https://github.com/Ryuurock/QuickTranslator/issues')
+    } },
+    { label: '帮助', click: () => {
+      dialog.showMessageBox({ message: '通过不停读取剪切板监听变化来翻译文本。\n展示方式有菜单栏和系统通知。\n使用系统通知记得关闭通知音哦。' });
     } },
     { type: 'separator' },
     { label: '退出', click: () => {
@@ -272,5 +279,7 @@ app.on('ready', () => {
   initTray();
   initIpcMain();
 
-  autoUpdater.checkForUpdatesAndNotify();
+  if (!is.development) {
+    autoUpdater.checkForUpdatesAndNotify();
+  }
 });
