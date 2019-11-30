@@ -22,7 +22,6 @@
     "appId": "com.ryuurock.QuickTranslator",
     "files": [
       "dist",
-      "static",
       "resources"
     ],
     "directories": {

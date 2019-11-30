@@ -60,7 +60,15 @@ const ErrorText: {
 };
 
 function initTray() {
-  tray = new Tray(path.join(__dirname, is.development ? '../../' : '../', '/static/icon@3x.png'));
+  tray = new Tray(path.join(__dirname, is.development ? '../..' : '..', '/resources/tray/iconTemplate.png'));
+
+  tray
+    .on('click', () => {
+      console.log('click')
+    })
+    .on('right-click', () => {
+      console.log('right-click')
+    })
 
   const menuBarType = userConfig.showType === undefined;
 
@@ -231,7 +239,6 @@ function checkConfig() {
       start();
     }
   } catch (e) {
-    console.log('err:', e)
     showDialog();
   }
 }
