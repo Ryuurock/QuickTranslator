@@ -104,7 +104,7 @@ function initTray() {
     { type: 'separator' },
     {
       label: '检查更新', click: (e) => {
-        autoUpdater.checkForUpdatesAndNotify();
+        autoUpdater.checkForUpdates();
         autoUpdater
           .once('update-not-available', (e) => {
             dialog.showMessageBox({ message: '暂时没有可用的更新。' });
@@ -280,6 +280,6 @@ app.on('ready', () => {
   initIpcMain();
 
   if (!is.development) {
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.checkForUpdates();
   }
 });
