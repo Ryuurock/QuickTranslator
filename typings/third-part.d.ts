@@ -26,3 +26,10 @@ declare module '*.css' {
   };
   export default style;
 }
+
+declare module '*.scss' {
+  const style: {
+    [key in string]: string
+  };
+  export default style;
+}

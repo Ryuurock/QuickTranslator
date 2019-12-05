@@ -1,8 +1,13 @@
 html, body {
   height: 100%;
-  background: #ececec;
   letter-spacing: 0.5px;
 }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -16,4 +21,14 @@ a {
 
 :global(#root) {
   overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #e0e0e0;
+  }
+
+  a {
+    color: #6cb3fa;
+  }
 }

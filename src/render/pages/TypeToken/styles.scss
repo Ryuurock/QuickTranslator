@@ -1,0 +1,51 @@
+.formItem {
+  display: flex;
+  margin-bottom: 6px;
+}
+
+.formItemLable {
+  flex: 0 0 110px;
+  text-align: right;
+  line-height: 24px;
+}
+
+.typeToken {
+  display: flex;
+  user-select: none;
+  padding: 17px 20px 19px;
+}
+
+.icon {
+  display: flex;
+  width: 67px;
+  margin-right: 20px;
+  flex: 0 0 67px;
+  justify-content: center;
+}
+
+.content {
+  flex: 1;
+}
+
+.title {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.body {
+  margin-bottom: 16px;
+}
+
+.extraInfo {
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    margin-left: 14px;
+  }
+}

@@ -60,6 +60,7 @@ const config: webpack.Configuration = {
               modules: {
                 localIdentName: '[name]__[local]__[hash:base64:5]'
               },
+              localsConvention: 'camelCase',
               sourceMap: true,
               importLoaders: 1
             }
@@ -174,7 +175,7 @@ const config: webpack.Configuration = {
   resolve: {
     extensions: ['.js', '.tsx', '.ts', '.jsx'],
     alias: {
-      '@': path.join(__dirname, '..'),
+      '@': path.join(__dirname, '../src'),
     },
   },
 

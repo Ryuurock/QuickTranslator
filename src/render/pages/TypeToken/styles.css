@@ -1,8 +1,0 @@
-.formItem {
-  display: flex;
-}
-.formItemLable {
-  flex: 0 0 110px;
-  text-align: right;
-  line-height: 24px;
-}

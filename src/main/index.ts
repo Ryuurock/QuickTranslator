@@ -200,7 +200,7 @@ function showDialog(param?: { path?: string, param?: any }, windowOption?: Brows
     param: {},
   }, param);
 
-  const defaultWindowOption = {
+  const defaultWindowOption: BrowserWindowConstructorOptions = {
     show: false,
     width: 498,
     height: 242,
@@ -211,9 +211,10 @@ function showDialog(param?: { path?: string, param?: any }, windowOption?: Brows
     webPreferences: {
       nodeIntegration: true
     },
+    vibrancy: 'under-window',
     ...windowOption
   };
-  
+
   const maybeCreated = BrowserWindow.getAllWindows().find((win) => win.getTitle() === defaultWindowOption.title)
 
   if (maybeCreated) {
@@ -222,12 +223,14 @@ function showDialog(param?: { path?: string, param?: any }, windowOption?: Brows
   } else {
     const window = new BrowserWindow(defaultWindowOption);
 
-    // window.webContents.openDevTools();
+    window.setAlwaysOnTop(true);
+
+    window.webContents.openDevTools();
 
     const path = is.development ? `http://127.0.0.1:${process.env.PORT || 1212}` : `file://${__dirname}/index.html`;
-  
+
     window.loadURL(`${path}#${defaultParam.path}?${qs.stringify(defaultParam.param)}`);
-  
+
     window.on('close', () => {
       if (!fs.existsSync(userConfigPath)) {
         app.quit();

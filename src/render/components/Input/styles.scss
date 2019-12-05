@@ -1,0 +1,43 @@
+.inputWrapper {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+}
+
+.focusRing {
+  position: absolute;
+  left:   0px;
+  top:    0px;
+  bottom: 0px;
+  right:  0px;
+  box-shadow: 0 0 0 20px rgba(109,179,253,0);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.formInput {
+  outline: none;
+  position: relative;
+  z-index: 1;
+  border: 1px solid #c1c1c1;
+  padding: 4px 3.5px 3px;
+  font-size: 13px;
+  width: 208px;
+
+  &:focus {
+    border-color: rgb(100, 171, 218);
+    z-index: 2;
+
+    + .focusRing {
+      transition: all 250ms ease;
+      box-shadow: 0 0 0 2.5px rgba(109,179,253,0.8);
+      z-index: 2;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .formInput {
+    background: rgba(255,255,255,.1);
+  }
+}
