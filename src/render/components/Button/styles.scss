@@ -9,6 +9,7 @@
   padding: 0px 13px;
   line-height: 19px;
   font-size: 13px;
+  color: inherit;
 
   &:active {
     background-image: -webkit-linear-gradient(top, #4c98fe 0%, #0564e3 100%);
@@ -35,5 +36,12 @@
       border-right-color: #125eed;
       color: rgba(255, 255, 255, .9);
     }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .button {
+    background: #676a6c;
+    border-color: transparent;
   }
 }

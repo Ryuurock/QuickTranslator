@@ -13,6 +13,15 @@
   box-shadow: 0 0 0 20px rgba(109,179,253,0);
   border-radius: 1px;
   pointer-events: none;
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    height: 1px;
+    background-color: #686a6c;
+    width: 100%;
+    transform: scale(1, 0.5);
+  }
 }
 
 .formInput {
@@ -23,6 +32,7 @@
   padding: 4px 3.5px 3px;
   font-size: 13px;
   width: 208px;
+  color: inherit;
 
   &:focus {
     border-color: rgb(100, 171, 218);
@@ -39,5 +49,6 @@
 @media (prefers-color-scheme: dark) {
   .formInput {
     background: rgba(255,255,255,.1);
+    border-color: transparent;
   }
 }

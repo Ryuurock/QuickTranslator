@@ -223,9 +223,9 @@ function showDialog(param?: { path?: string, param?: any }, windowOption?: Brows
   } else {
     const window = new BrowserWindow(defaultWindowOption);
 
-    window.setAlwaysOnTop(true);
+    // window.setAlwaysOnTop(true);
 
-    window.webContents.openDevTools();
+    // window.webContents.openDevTools();
 
     const path = is.development ? `http://127.0.0.1:${process.env.PORT || 1212}` : `file://${__dirname}/index.html`;
 
