@@ -23,7 +23,7 @@ const API_PATH = 'https://fanyi-api.baidu.com/api/trans/vip/translate';
 const userConfigPath = `${app.getPath('userData')}/config.json`;
 
 let userConfig: IUserConfig = {};
-let setIntervalTimer: NodeJS.Timeout;
+let setIntervalTimer: number;
 let tray: Tray;
 
 let retryCount = 0;

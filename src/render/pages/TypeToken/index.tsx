@@ -64,7 +64,7 @@ export const TypeToken: React.FC = () => {
               </div>
             </div>
             <p style={{ marginTop: 20 }}>
-              <a href="javascript: void(0)" onClick={() => shell.openExternal('http://api.fanyi.baidu.com/api/trans/product/prodinfo')}>
+              <a onClick={() => shell.openExternal('http://api.fanyi.baidu.com/api/trans/product/prodinfo')}>
                 去获取以上信息
               </a>
             </p>
