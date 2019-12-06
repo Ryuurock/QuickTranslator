@@ -7,7 +7,8 @@ import fs from 'fs';
 import md5 from 'md5';
 import axios from 'axios';
 import { is } from 'electron-util';
-import { app, Tray, clipboard, BrowserWindow, ipcMain, Notification, Menu, dialog, BrowserWindowConstructorOptions, shell } from 'electron';
+import { app, Tray, clipboard, BrowserWindow, ipcMain, Notification, Menu, dialog, BrowserWindowConstructorOptions, shell, systemPreferences } from 'electron';
+import { THEME_COLOR_CHANGE } from '../common/event';
 
 autoUpdater
   .on('download-progress', (e) => {
@@ -212,6 +213,7 @@ function showDialog(param?: { path?: string, param?: any }, windowOption?: Brows
       nodeIntegration: true
     },
     vibrancy: 'under-window',
+    fullscreen: false,
     ...windowOption
   };
 
@@ -225,7 +227,7 @@ function showDialog(param?: { path?: string, param?: any }, windowOption?: Brows
 
     // window.setAlwaysOnTop(true);
 
-    // window.webContents.openDevTools();
+    window.webContents.openDevTools();
 
     const path = is.development ? `http://127.0.0.1:${process.env.PORT || 1212}` : `file://${__dirname}/index.html`;
 
@@ -272,17 +274,31 @@ function initIpcMain() {
     });
 }
 
-// Don't quit app when closing any spawned windows
-app.on('window-all-closed', (e: Event) => {
-  e.preventDefault();
-});
+function startWatchThemeColor() {
+  let oldColor = '';
+  setInterval(() => {
+    const newColor = systemPreferences.getAccentColor();
+    if (oldColor !== newColor) {
+      oldColor = newColor;
+      BrowserWindow.getAllWindows().forEach((win) => {
+        win.webContents.send(THEME_COLOR_CHANGE, newColor);
+      });
+    }
+  }, 1e3);
+}
 
-app.on('ready', () => {
-  checkConfig();
-  initTray();
-  initIpcMain();
+app
+  // Don't quit app when closing any spawned windows
+  .on('window-all-closed', (e: Event) => {
+    e.preventDefault();
+  })
+  .on('ready', () => {
+    checkConfig();
+    initTray();
+    initIpcMain();
+    startWatchThemeColor();
 
-  if (!is.development) {
-    autoUpdater.checkForUpdates();
-  }
-});
+    if (!is.development) {
+      autoUpdater.checkForUpdates();
+    }
+  });

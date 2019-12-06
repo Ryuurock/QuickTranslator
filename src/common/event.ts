@@ -1,0 +1,1 @@
+export const THEME_COLOR_CHANGE = 'THEME_COLOR_CHANGE';

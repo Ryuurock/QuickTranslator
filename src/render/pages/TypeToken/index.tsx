@@ -1,7 +1,7 @@
 import qs from 'query-string';
 import { useLocation } from 'react-router-dom';
 import { remote, ipcRenderer, shell } from 'electron';
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import styles from './styles.scss';
 import { Input, Button } from '@/render/components';
@@ -26,10 +26,6 @@ export const TypeToken: React.FC = () => {
     e.preventDefault();
     ipcRenderer.send('submit-type-token', state);
   }, [state]);
-
-  useEffect(() => {
-    ipcRenderer.send('react-did-mounted');
-  });
 
   return (
     <div className={styles.typeToken}>
