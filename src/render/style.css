@@ -17,6 +17,7 @@ a {
   text-decoration: none;
   font-size: 11px;
   color: #06c;
+  cursor: pointer;
 }
 
 :global(#root) {
