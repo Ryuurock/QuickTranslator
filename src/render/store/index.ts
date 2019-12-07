@@ -6,6 +6,8 @@ export interface IGlobalStore {
     colorShallow: string,
     colorShallower: string,
     colorShallowest: string,
+    colorShallowestAlpha: string,
+    colorShallowestAlpha2: string,
     colorDeep: string,
     colorDeeper: string,
     colorDeepest: string,

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import cls from 'classnames';
-import styled from 'styled-components'
+import styled from 'styled-components';
 import Context, { IGlobalStore } from '@/render/store';
 
 type ButtonProps = Omit<JSX.IntrinsicElements['button'], 'ref'> & { isPrimary?: boolean };
@@ -11,7 +11,7 @@ const MainButton = styled.button<ButtonProps & { themeColor: Required<IGlobalSto
   border: 0;
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.04) 0px 1px;
-  padding: 0px 13px;
+  padding: 1px 14px;
   line-height: 19px;
   font-size: 13px;
   color: inherit;

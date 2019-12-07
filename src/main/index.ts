@@ -23,7 +23,7 @@ const API_PATH = 'https://fanyi-api.baidu.com/api/trans/vip/translate';
 const userConfigPath = `${app.getPath('userData')}/config.json`;
 
 let userConfig: IUserConfig = {};
-let setIntervalTimer: number;
+let setIntervalTimer: NodeJS.Timeout;
 let tray: Tray;
 
 let retryCount = 0;
@@ -135,7 +135,7 @@ function start() {
 
   clearInterval(setIntervalTimer);
 
-  setIntervalTimer = setInterval(() => {
+  setIntervalTimer = global.setInterval(() => {
     const newClipboardText = clipboard.readText().trim();
     if (newClipboardText !== curClipboard) {
       curClipboard = newClipboardText;
@@ -227,7 +227,7 @@ function showDialog(param?: { path?: string, param?: any }, windowOption?: Brows
 
     // window.setAlwaysOnTop(true);
 
-    window.webContents.openDevTools();
+    // window.webContents.openDevTools();
 
     const path = is.development ? `http://127.0.0.1:${process.env.PORT || 1212}` : `file://${__dirname}/index.html`;
 
@@ -271,6 +271,7 @@ function initIpcMain() {
       const currentWindow = BrowserWindow.fromWebContents(_.sender);
       currentWindow.show();
       currentWindow.focus();
+      _.returnValue = systemPreferences.getAccentColor();
     });
 }
 

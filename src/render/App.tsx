@@ -10,49 +10,43 @@ import { THEME_COLOR_CHANGE } from '@/common/event';
  * @param hex 16进制字符串
  * @param ratio 比率
  */
-function HEXToRGBA(hex: string, ratio: number) {
+function HEXToRGBA(hex: string, ratio: number, alpha = 1) {
   const hexCharArray = hex.split('');
   const rgba: number[] = [];
   while (hexCharArray.length) {
     const hexStr = hexCharArray.splice(0, 2);
-    rgba.push(parseInt(`0x${hexStr.join('')}`, 16) * (hexCharArray.length ? ratio : 1));
+    rgba.push(hexCharArray.length ? parseInt(`0x${hexStr.join('')}`, 16) * ratio : alpha);
   }
 
   return `rgba(${rgba})`;
 }
 
-const defaultColor = '125eedff';
+function getThemeColors(color = '125eedff'): IGlobalStore {
+  return {
+    sysytemColor: {
+      color: HEXToRGBA(color, 1),
+      colorShallow: HEXToRGBA(color, 1.2),
+      colorShallower: HEXToRGBA(color, 1.4),
+      colorShallowest: HEXToRGBA(color, 1.6),
+      colorShallowestAlpha: HEXToRGBA(color, 1.6, 0.8),
+      colorShallowestAlpha2: HEXToRGBA(color, 1.6, 0.5),
+      colorDeep: HEXToRGBA(color, 0.9),
+      colorDeeper: HEXToRGBA(color, 0.8),
+      colorDeepest: HEXToRGBA(color, 0.7),
+    }
+  }
+}
 
 const App: React.FC = () => {
-  const [state, setState] = useState<IGlobalStore>({
-    sysytemColor: {
-      color: HEXToRGBA(defaultColor, 1),
-      colorShallow: HEXToRGBA(defaultColor, 1.2),
-      colorShallower: HEXToRGBA(defaultColor, 1.4),
-      colorShallowest: HEXToRGBA(defaultColor, 1.6),
-      colorDeep: HEXToRGBA(defaultColor, 0.9),
-      colorDeeper: HEXToRGBA(defaultColor, 0.8),
-      colorDeepest: HEXToRGBA(defaultColor, 0.7),
-    }
-  })
+  const [state, setState] = useState<IGlobalStore>(getThemeColors());
 
   useEffect(() => {
     ipcRenderer.on(THEME_COLOR_CHANGE, (_, sysytemColor) => {
-      setState({ sysytemColor: {
-        color: HEXToRGBA(sysytemColor, 1),
-        colorShallow: HEXToRGBA(sysytemColor, 1.2),
-        colorShallower: HEXToRGBA(sysytemColor, 1.4),
-        colorShallowest: HEXToRGBA(sysytemColor, 1.6),
-        colorDeep: HEXToRGBA(sysytemColor, 0.9),
-        colorDeeper: HEXToRGBA(sysytemColor, 0.8),
-        colorDeepest: HEXToRGBA(sysytemColor, 0.7),
-      } });
+      setState(getThemeColors(sysytemColor));
     });
-  }, [setState]);
-
-  useEffect(() => {
-    ipcRenderer.send('react-did-mounted');
-  });
+    const color = ipcRenderer.sendSync('react-did-mounted');
+    setState(getThemeColors(color));
+  }, []);
 
   return (
     <Router>
