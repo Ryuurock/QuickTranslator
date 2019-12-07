@@ -6,15 +6,12 @@ import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { dependencies as externals } from '../package.json';
-
 
 function getENVStyleLoader() {
   return process.env.NODE_ENV === 'development' ? 'style-loader' : MiniCssExtractPlugin.loader;
 }
 
 const config: webpack.Configuration = {
-  externals: [...Object.keys(externals || {})],
 
   target: 'electron-renderer',
 

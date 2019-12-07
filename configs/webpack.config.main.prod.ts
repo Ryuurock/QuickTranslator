@@ -8,9 +8,7 @@ if (!process.env.GH_TOKEN) {
 }
 
 export default merge.smart({}, {
-  externals: [...Object.keys(externals || {})],
-
-  devtool: 'source-map',
+  devtool: false,
 
   target: 'electron-main',
 
