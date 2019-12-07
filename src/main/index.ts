@@ -188,14 +188,7 @@ async function baiduTranslate(conditionText: string, callback: (trans_result: st
   const { error_code, trans_result }  = data;
 
   if (!error_code) {
-    if (trans_result) {
-      const text = trans_result.map(({ dst }) => dst).join('').replace(/\n/g, '');
-      callback(text);
-      if (to === 'en') {
-        curClipboard = text;
-        clipboard.writeText(text);
-      }
-    }
+    trans_result && callback(trans_result.map(({ dst }) => dst).join('').replace(/\n/g, ''));
   } else {
     const error = ErrorText[error_code];
     if (error) {
