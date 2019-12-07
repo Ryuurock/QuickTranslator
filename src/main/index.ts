@@ -28,6 +28,9 @@ let tray: Tray;
 
 let retryCount = 0;
 
+const letterReg = /[a-zA-Z]/g;
+const chineseCharacterReg = /[\u4e00-\u9fa5]/g;
+
 enum ShowType {
   MENUBAR = 'menuBar',
   NOTIFICATION = 'notification',
@@ -129,15 +132,18 @@ function initTray() {
   tray.setContextMenu(contextMenu);
 }
 
+let curClipboard = clipboard.readText().trim();
+
 function start() {
   app.dock.hide();
-  let curClipboard = clipboard.readText().trim();
 
   clearInterval(setIntervalTimer);
 
   setIntervalTimer = global.setInterval(() => {
     const newClipboardText = clipboard.readText().trim();
-    if (newClipboardText !== curClipboard) {
+    const letter = newClipboardText.match(letterReg);
+    const chineseCharacter = newClipboardText.match(chineseCharacterReg);
+    if (newClipboardText !== curClipboard && (letter || chineseCharacter)) {
       curClipboard = newClipboardText;
       retryCount = 0;
       baiduTranslate(newClipboardText, (result) => {
@@ -160,18 +166,36 @@ function start() {
  * @param conditionText 待翻译文本
  */
 async function baiduTranslate(conditionText: string, callback: (trans_result: string) => void) {
+  const letter = conditionText.match(letterReg);
+  const chineseCharacter = conditionText.match(chineseCharacterReg);
+
+  let to = 'zh';
+  let from = 'en';
+
+  if (!letter || (chineseCharacter && chineseCharacter.length > letter.length)) {
+    to = 'en';
+    from = 'zh';
+  }
+
   const { appId, token } = userConfig;
   const salt = Date.now();
   const sign = md5(`${appId}${conditionText}${salt}${token}`);
   console.time('用时')
-  const data = await axios.get<IBaiduResponse>(`${API_PATH}?q=${encodeURIComponent(conditionText)}&from=auto&to=zh&appid=${appId}&salt=${salt}&sign=${sign}`)
+  const data = await axios.get<IBaiduResponse>(`${API_PATH}?q=${encodeURIComponent(conditionText)}&from=${from}&to=${to}&appid=${appId}&salt=${salt}&sign=${sign}`)
     .then(({ data }) => data);
   console.timeEnd('用时')
 
   const { error_code, trans_result }  = data;
 
   if (!error_code) {
-    trans_result && callback(trans_result.map(({ dst }) => dst).join('').replace(/\n/g, ''));
+    if (trans_result) {
+      const text = trans_result.map(({ dst }) => dst).join('').replace(/\n/g, '');
+      callback(text);
+      if (to === 'en') {
+        curClipboard = text;
+        clipboard.writeText(text);
+      }
+    }
   } else {
     const error = ErrorText[error_code];
     if (error) {
