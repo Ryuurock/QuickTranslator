@@ -9,9 +9,9 @@ const MainButton = styled.button<ButtonProps & { themeColor: Required<IGlobalSto
   background-color: rgb(255, 255, 255);
   outline: none;
   border: 0;
-  border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0.04) 0px 1px;
-  padding: 1px 14px;
+  border-radius: 4px;
+  box-shadow: inset 0px 15px 2px -15px rgba(255,255,255,0.5);
+  padding: 0px 14px;
   line-height: 19px;
   font-size: 13px;
   color: inherit;
