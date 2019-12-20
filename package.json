@@ -1,6 +1,6 @@
 {
   "name": "quick-translator",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "dist/main.js",
   "description": "菜单栏和系统通知翻译，免打开app",
   "author": {
