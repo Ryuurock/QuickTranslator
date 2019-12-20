@@ -180,10 +180,14 @@ async function baiduTranslate(conditionText: string, callback: (trans_result: st
   const { appId, token } = userConfig;
   const salt = Date.now();
   const sign = md5(`${appId}${conditionText}${salt}${token}`);
-  console.time('用时')
+  if (is.development) {
+    console.time('用时')
+  }
   const data = await axios.get<IBaiduResponse>(`${API_PATH}?q=${encodeURIComponent(conditionText)}&from=${from}&to=${to}&appid=${appId}&salt=${salt}&sign=${sign}`)
     .then(({ data }) => data);
-  console.timeEnd('用时')
+  if (is.development) {
+    console.timeEnd('用时')
+  }
 
   const { error_code, trans_result }  = data;
 
@@ -192,15 +196,10 @@ async function baiduTranslate(conditionText: string, callback: (trans_result: st
   } else {
     const error = ErrorText[error_code];
     if (error) {
-      const messageBox = dialog.showMessageBox({
-        title: error.title,
-        message: error.message || '',
-        type: 'error'
-      });
+      callback(error.message || error.title);
+
       if (error_code === '52003') {
-        messageBox.then(() => {
-          showDialog({ param: userConfig });
-        });
+        showDialog({ param: userConfig });
       }
     }
 
