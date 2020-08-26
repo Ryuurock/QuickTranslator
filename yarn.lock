@@ -1006,13 +1006,13 @@
   resolved "https://registry.npm.taobao.org/@types/tapable/download/@types/tapable-1.0.4.tgz#b4ffc7dc97b498c969b360a41eee247f82616370"
   integrity sha1-tP/H3Je0mMlps2CkHu4kf4JhY3A=
 
-"@types/terser-webpack-plugin@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.npm.taobao.org/@types/terser-webpack-plugin/download/@types/terser-webpack-plugin-2.2.0.tgz#b1561e3118b9319d80ff65798c345877669b3e12"
-  integrity sha1-sVYeMRi5MZ2A/2V5jDRYd2abPhI=
+"@types/terser-webpack-plugin@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.npm.taobao.org/@types/terser-webpack-plugin/download/@types/terser-webpack-plugin-4.1.0.tgz#c1c195a19d1850153d5eda3e01b29df0701d0979"
+  integrity sha1-wcGVoZ0YUBU9Xto+AbKd8HAdCXk=
   dependencies:
     "@types/webpack" "*"
-    terser "^4.3.9"
+    terser "^4.6.13"
 
 "@types/uglify-js@*":
   version "3.0.4"
@@ -8093,19 +8093,10 @@ terser-webpack-plugin@^2.2.2:
     terser "^4.4.2"
     webpack-sources "^1.4.3"
 
-terser@^4.1.2, terser@^4.3.9:
-  version "4.4.0"
-  resolved "https://registry.npm.taobao.org/terser/download/terser-4.4.0.tgz#22c46b4817cf4c9565434bfe6ad47336af259ac3"
-  integrity sha1-IsRrSBfPTJVlQ0v+atRzNq8lmsM=
-  dependencies:
-    commander "^2.20.0"
-    source-map "~0.6.1"
-    source-map-support "~0.5.12"
-
-terser@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.npm.taobao.org/terser/download/terser-4.4.2.tgz#448fffad0245f4c8a277ce89788b458bfd7706e8"
-  integrity sha1-RI//rQJF9Miid86JeItFi/13Bug=
+terser@^4.1.2, terser@^4.4.2, terser@^4.6.13:
+  version "4.8.0"
+  resolved "https://registry.npm.taobao.org/terser/download/terser-4.8.0.tgz#63056343d7c70bb29f3af665865a46fe03a0df17"
+  integrity sha1-YwVjQ9fHC7KfOvZlhlpG/gOg3xc=
   dependencies:
     commander "^2.20.0"
     source-map "~0.6.1"
