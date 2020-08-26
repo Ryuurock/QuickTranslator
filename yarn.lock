@@ -3146,10 +3146,10 @@ electron-util@^0.13.0:
     electron-is-dev "^1.1.0"
     new-github-issue-url "^0.2.1"
 
-electron@^7.1.2:
-  version "7.1.2"
-  resolved "https://registry.npm.taobao.org/electron/download/electron-7.1.2.tgz?cache=0&sync_timestamp=1574308543045&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Felectron%2Fdownload%2Felectron-7.1.2.tgz#d1726b9e50b29e97f5f12b52feb225ba87e0640f"
-  integrity sha1-0XJrnlCynpf18StS/rIluofgZA8=
+electron@^7.2.4:
+  version "7.2.4"
+  resolved "https://registry.npm.taobao.org/electron/download/electron-7.2.4.tgz#9fc0446dae23ead897af8742470cb18da55c6ce9"
+  integrity sha1-n8BEba4j6tiXr4dCRwyxjaVcbOk=
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
