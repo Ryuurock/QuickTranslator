@@ -895,10 +895,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/mini-css-extract-plugin@^0.8.0":
-  version "0.8.0"
-  resolved "https://registry.npm.taobao.org/@types/mini-css-extract-plugin/download/@types/mini-css-extract-plugin-0.8.0.tgz#6a5d3459d40cb51f14059e9aa410c9e970656103"
-  integrity sha1-al00WdQMtR8UBZ6apBDJ6XBlYQM=
+"@types/mini-css-extract-plugin@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.npm.taobao.org/@types/mini-css-extract-plugin/download/@types/mini-css-extract-plugin-0.9.1.tgz#d4bdde5197326fca039d418f4bdda03dc74dc451"
+  integrity sha1-1L3eUZcyb8oDnUGPS92gPcdNxFE=
   dependencies:
     "@types/webpack" "*"
 
