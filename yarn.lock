@@ -6753,10 +6753,10 @@ query-string@^4.1.0:
     object-assign "^4.1.0"
     strict-uri-encode "^1.0.0"
 
-query-string@^6.9.0:
-  version "6.9.0"
-  resolved "https://registry.npm.taobao.org/query-string/download/query-string-6.9.0.tgz#1c3b727c370cf00f177c99f328fda2108f8fa3dd"
-  integrity sha1-HDtyfDcM8A8XfJnzKP2iEI+Po90=
+query-string@^6.13.2:
+  version "6.13.2"
+  resolved "https://registry.npm.taobao.org/query-string/download/query-string-6.13.2.tgz#3585aa9412c957cbd358fd5eaca7466f05586dda"
+  integrity sha1-NYWqlBLJV8vTWP1erKdGbwVYbdo=
   dependencies:
     decode-uri-component "^0.2.0"
     split-on-first "^1.0.0"
