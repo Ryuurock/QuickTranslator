@@ -895,12 +895,12 @@
   dependencies:
     "@types/node" "*"
 
-"@types/mini-css-extract-plugin@^0.8.0":
-  version "0.8.0"
-  resolved "https://registry.npm.taobao.org/@types/mini-css-extract-plugin/download/@types/mini-css-extract-plugin-0.8.0.tgz#6a5d3459d40cb51f14059e9aa410c9e970656103"
-  integrity sha1-al00WdQMtR8UBZ6apBDJ6XBlYQM=
+"@types/mini-css-extract-plugin@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.npm.taobao.org/@types/mini-css-extract-plugin/download/@types/mini-css-extract-plugin-1.2.3.tgz#199037f2f3e11fa0fa3e7606d762a6cd56a22785"
+  integrity sha1-GZA38vPhH6D6PnYG12KmzVaiJ4U=
   dependencies:
-    "@types/webpack" "*"
+    "@types/webpack" "^4"
 
 "@types/minimatch@*":
   version "3.0.3"
@@ -1006,6 +1006,11 @@
   resolved "https://registry.npm.taobao.org/@types/tapable/download/@types/tapable-1.0.4.tgz#b4ffc7dc97b498c969b360a41eee247f82616370"
   integrity sha1-tP/H3Je0mMlps2CkHu4kf4JhY3A=
 
+"@types/tapable@^1":
+  version "1.0.7"
+  resolved "https://registry.npm.taobao.org/@types/tapable/download/@types/tapable-1.0.7.tgz?cache=0&sync_timestamp=1616706310077&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Ftapable%2Fdownload%2F%40types%2Ftapable-1.0.7.tgz#545158342f949e8fd3bfd813224971ecddc3fac4"
+  integrity sha1-VFFYNC+Uno/Tv9gTIklx7N3D+sQ=
+
 "@types/terser-webpack-plugin@^2.2.0":
   version "2.2.0"
   resolved "https://registry.npm.taobao.org/@types/terser-webpack-plugin/download/@types/terser-webpack-plugin-2.2.0.tgz#b1561e3118b9319d80ff65798c345877669b3e12"
@@ -1037,14 +1042,14 @@
     "@types/source-list-map" "*"
     source-map "^0.6.1"
 
-"@types/webpack@*", "@types/webpack@^4.41.0":
-  version "4.41.0"
-  resolved "https://registry.npm.taobao.org/@types/webpack/download/@types/webpack-4.41.0.tgz#b813a044d8b0dec7dfcd7622fdbe327bde06eb9a"
-  integrity sha1-uBOgRNiw3sffzXYi/b4ye94G65o=
+"@types/webpack@*", "@types/webpack@^4", "@types/webpack@^4.41.0":
+  version "4.41.27"
+  resolved "https://registry.npm.taobao.org/@types/webpack/download/@types/webpack-4.41.27.tgz#f47da488c8037e7f1b2dbf2714fbbacb61ec0ffc"
+  integrity sha1-9H2kiMgDfn8bLb8nFPu6y2HsD/w=
   dependencies:
     "@types/anymatch" "*"
     "@types/node" "*"
-    "@types/tapable" "*"
+    "@types/tapable" "^1"
     "@types/uglify-js" "*"
     "@types/webpack-sources" "*"
     source-map "^0.6.0"
