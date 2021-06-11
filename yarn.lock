@@ -888,10 +888,10 @@
     "@types/tapable" "*"
     "@types/webpack" "*"
 
-"@types/md5@^2.1.33":
-  version "2.1.33"
-  resolved "https://registry.npm.taobao.org/@types/md5/download/@types/md5-2.1.33.tgz#8c8dba30df4ad0e92296424f08c4898dd808e8df"
-  integrity sha1-jI26MN9K0OkilkJPCMSJjdgI6N8=
+"@types/md5@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.nlark.com/@types/md5/download/@types/md5-2.3.0.tgz#3b6a623091160f4dc75be3173e25f2110dc3fa1f"
+  integrity sha1-O2piMJEWD03HW+MXPiXyEQ3D+h8=
   dependencies:
     "@types/node" "*"
 
