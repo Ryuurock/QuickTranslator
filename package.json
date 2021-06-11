@@ -89,7 +89,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-hot-loader": "^4.12.18",
-    "react-router-dom": "^5.1.2",
+    "react-router-dom": "^5.2.0",
     "rimraf": "^3.0.0",
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.0",
