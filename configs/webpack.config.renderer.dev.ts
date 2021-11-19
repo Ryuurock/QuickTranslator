@@ -6,8 +6,8 @@ import baseConfig from './webpack.config.base';
 const port = process.env.PORT || 1212;
 process.env.PORT = `${port}`;
 
-export default merge.smart(baseConfig, {
-  devtool: 'cheap-eval-source-map',
+export default merge(baseConfig, {
+  devtool: 'eval-cheap-source-map',
 
   mode: 'development',
 
@@ -55,13 +55,9 @@ export default merge.smart(baseConfig, {
   devServer: {
     port,
     compress: true,
-    // noInfo: true,
-    stats: 'errors-only',
-    inline: true,
-    lazy: false,
     hot: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
-    before() {
+    onBeforeSetupMiddleware() {
       spawn(process.platform === 'win32' ? 'yarn.cmd' : 'yarn', ['start:main'], {
         env: process.env,
         stdio: 'inherit'

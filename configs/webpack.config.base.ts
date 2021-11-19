@@ -57,7 +57,7 @@ const config: webpack.Configuration = {
               modules: {
                 localIdentName: '[name]__[local]__[hash:base64:5]'
               },
-              localsConvention: 'camelCase',
+              // exportLocalsConvention: 'camelCase',
               sourceMap: true,
               importLoaders: 1
             }
@@ -180,8 +180,6 @@ const config: webpack.Configuration = {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production'
     }),
-
-    new webpack.NamedModulesPlugin(),
 
     new HtmlWebpackPlugin({
       template: 'static/index.html'

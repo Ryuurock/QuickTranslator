@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ipcRenderer } from 'electron';
-import { Route, Switch, HashRouter as Router } from 'react-router-dom';
+import { Route, HashRouter as Router, Routes } from 'react-router-dom';
 import { TypeToken } from './pages';
 import Context, { IGlobalStore } from './store';
 import { THEME_COLOR_CHANGE } from '@/common/event';
@@ -50,11 +50,11 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <Switch>
-        <Context.Provider value={state}>
-          <Route path="/" component={TypeToken} />
-        </Context.Provider>
-      </Switch>
+      <Context.Provider value={state}>
+        <Routes>
+          <Route path="/" element={<TypeToken />} />
+        </Routes>
+      </Context.Provider>
     </Router>
   );
 };

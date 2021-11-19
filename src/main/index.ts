@@ -226,7 +226,8 @@ function showDialog(param?: { path?: string, param?: any }, windowOption?: Brows
     maximizable: false,
     minimizable: false,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false,
     },
     vibrancy: 'under-window',
     fullscreen: false,
@@ -280,13 +281,13 @@ function initIpcMain() {
   ipcMain
     .on('submit-type-token', (_, token: IUserConfig) => {
       saveConfig(token);
-      BrowserWindow.fromWebContents(_.sender).close();
+      BrowserWindow.fromWebContents(_.sender)?.close();
       start();
     })
     .on('react-did-mounted', (_) => {
       const currentWindow = BrowserWindow.fromWebContents(_.sender);
-      currentWindow.show();
-      currentWindow.focus();
+      currentWindow?.show();
+      currentWindow?.focus();
       _.returnValue = systemPreferences.getAccentColor();
     });
 }

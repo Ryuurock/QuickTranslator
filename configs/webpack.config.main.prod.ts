@@ -3,11 +3,11 @@ import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import { dependencies as externals } from '../package.json';
 
-if (!process.env.GH_TOKEN) {
-  throw new Error('未配置【GH_TOKEN】');
-}
+// if (!process.env.GH_TOKEN) {
+//   throw new Error('未配置【GH_TOKEN】');
+// }
 
-export default merge.smart({}, {
+export default merge({}, {
   devtool: false,
 
   target: 'electron-main',
@@ -70,8 +70,6 @@ export default merge.smart({}, {
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        sourceMap: true,
-        cache: true
       }),
     ]
   },

@@ -5,10 +5,12 @@ import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import baseConfig from './webpack.config.base';
 
-export default merge.smart(baseConfig, {
+export default merge(baseConfig, {
   devtool: false,
 
   mode: 'production',
+
+  target: 'electron-main',
 
   entry: [
     require.resolve('../src/render/index.tsx')
@@ -39,7 +41,7 @@ export default merge.smart(baseConfig, {
     new MiniCssExtractPlugin({
       filename: 'style.css'
     }),
-
+    // @ts-expect-error
     new OptimizeCSSAssetsPlugin({
       cssProcessorOptions: {
         map: {
@@ -55,8 +57,6 @@ export default merge.smart(baseConfig, {
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        sourceMap: false,
-        cache: true
       }),
     ]
   },
