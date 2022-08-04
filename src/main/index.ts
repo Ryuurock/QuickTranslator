@@ -57,6 +57,10 @@ const ErrorText: {
     title: '访问频率受限',
     message: '您的请求频率过快，请降低翻译请求频率',
   },
+  54004: {
+    title: '没钱了',
+    message: '🖕🏻垃圾百度，额度用完了',
+  },
   58002: {
     title: '服务当前已关闭',
     message: '请前往管理控制台开启服务',
@@ -143,6 +147,9 @@ function start() {
     const newClipboardText = clipboard.readText().trim();
     const letter = newClipboardText.match(letterReg);
     const chineseCharacter = newClipboardText.match(chineseCharacterReg);
+    if (newClipboardText.length > 15 || /[{}\[\]!@#$%^&*()_+-=;'"?/]/.test(newClipboardText)) {
+      return;
+    }
     if (newClipboardText !== curClipboard && (letter || chineseCharacter)) {
       curClipboard = newClipboardText;
       retryCount = 0;
