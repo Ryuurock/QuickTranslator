@@ -110,7 +110,7 @@ function start() {
 
   setIntervalTimer = global.setInterval(() => {
     const newClipboardText = clipboard.readText().trim();
-    if (newClipboardText.length > 25 || /[{}\[\]!@#$%^&*()_+-=;'"?/]/.test(newClipboardText)) {
+    if (newClipboardText.length > 25 || /[{}\[\]!@#$%^&*()+=;?/]/.test(newClipboardText)) {
       return;
     }
 
