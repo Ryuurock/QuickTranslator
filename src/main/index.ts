@@ -4,11 +4,12 @@ import path from 'path';
 import { autoUpdater } from 'electron-updater';
 import qs from 'query-string';
 import fs from 'fs';
-import md5 from 'md5';
-import axios from 'axios';
 import { is } from 'electron-util';
 import { app, Tray, clipboard, BrowserWindow, ipcMain, Notification, Menu, dialog, BrowserWindowConstructorOptions, shell, systemPreferences } from 'electron';
 import { THEME_COLOR_CHANGE } from '../common/event';
+import { baiduTranslate } from './platform/baidu';
+import { chineseCharacterReg, letterReg } from './platform/utils';
+import { tencentTranslator } from './platform/tencent';
 
 autoUpdater
   .on('download-progress', (e) => {
@@ -18,18 +19,12 @@ autoUpdater
     autoUpdater.quitAndInstall();
   })
 
-const API_PATH = 'https://fanyi-api.baidu.com/api/trans/vip/translate';
 
 const userConfigPath = `${app.getPath('userData')}/config.json`;
 
 let userConfig: IUserConfig = {};
 let setIntervalTimer: NodeJS.Timeout;
 let tray: Tray;
-
-let retryCount = 0;
-
-const letterReg = /[a-zA-Z]/g;
-const chineseCharacterReg = /[\u4e00-\u9fa5]/g;
 
 enum ShowType {
   MENUBAR = 'menuBar',
@@ -40,36 +35,6 @@ enum WindowTitle {
   EditConfig = '编辑配置信息',
 }
 
-const ErrorText: {
-  [key in string]: {
-    title: string,
-    message?: string,
-  }
-} = {
-  52002: {
-    title: '系统错误',
-  },
-  52003: {
-    title: '未授权用户',
-    message: '检查您的 appid 是否正确，或者服务是否开通',
-  },
-  54003: {
-    title: '访问频率受限',
-    message: '您的请求频率过快，请降低翻译请求频率',
-  },
-  54004: {
-    title: '没钱了',
-    message: '🖕🏻垃圾百度，额度用完了',
-  },
-  58002: {
-    title: '服务当前已关闭',
-    message: '请前往管理控制台开启服务',
-  },
-  90107: {
-    title: '认证未通过或未生效',
-    message: '请前往百度翻译开放平台查看认证进度',
-  },
-};
 
 function initTray() {
   tray = new Tray(path.join(__dirname, is.development ? '../..' : '..', '/resources/tray/iconTemplate.png'));
@@ -136,7 +101,7 @@ function initTray() {
   tray.setContextMenu(contextMenu);
 }
 
-let curClipboard = clipboard.readText().trim();
+let curClipboard = '';
 
 function start() {
   app.dock.hide();
@@ -145,78 +110,32 @@ function start() {
 
   setIntervalTimer = global.setInterval(() => {
     const newClipboardText = clipboard.readText().trim();
-    const letter = newClipboardText.match(letterReg);
-    const chineseCharacter = newClipboardText.match(chineseCharacterReg);
-    if (newClipboardText.length > 15 || /[{}\[\]!@#$%^&*()_+-=;'"?/]/.test(newClipboardText)) {
+    if (newClipboardText.length > 25 || /[{}\[\]!@#$%^&*()_+-=;'"?/]/.test(newClipboardText)) {
       return;
     }
+
+    const letter = newClipboardText.match(letterReg);
+    const chineseCharacter = newClipboardText.match(chineseCharacterReg);
+
     if (newClipboardText !== curClipboard && (letter || chineseCharacter)) {
       curClipboard = newClipboardText;
-      retryCount = 0;
-      baiduTranslate(newClipboardText, (result) => {
-        if (userConfig.showType === ShowType.NOTIFICATION) {
-          new Notification({
-            title: '翻译结果',
-            body: result,
-            silent: false,
-          }).show();
-        } else {
-          tray.setTitle(result.length > 15 ? `${result.substr(0, 15)}...` : result);
-        }
-      });
+
+      tencentTranslator(newClipboardText, userConfig)
+        .then((result) => {
+          if (userConfig.showType === ShowType.NOTIFICATION) {
+            new Notification({
+              title: '翻译结果',
+              body: result,
+              silent: false,
+            }).show();
+          } else {
+            tray.setTitle(result.length > 20 ? `${result.substring(0, 20)}...` : result);
+          }
+        });
     }
   }, 500);
 }
 
-/**
- * 翻译
- * @param conditionText 待翻译文本
- */
-async function baiduTranslate(conditionText: string, callback: (trans_result: string) => void) {
-  const letter = conditionText.match(letterReg);
-  const chineseCharacter = conditionText.match(chineseCharacterReg);
-
-  let to = 'zh';
-  let from = 'en';
-
-  if (!letter || (chineseCharacter && chineseCharacter.length > letter.length)) {
-    to = 'en';
-    from = 'zh';
-  }
-
-  const { appId, token } = userConfig;
-  const salt = Date.now();
-  const sign = md5(`${appId}${conditionText}${salt}${token}`);
-  if (is.development) {
-    console.time('用时')
-  }
-  const data = await axios.get<IBaiduResponse>(`${API_PATH}?q=${encodeURIComponent(conditionText)}&from=${from}&to=${to}&appid=${appId}&salt=${salt}&sign=${sign}`)
-    .then(({ data }) => data);
-  if (is.development) {
-    console.timeEnd('用时')
-  }
-
-  const { error_code, trans_result }  = data;
-
-  if (!error_code) {
-    trans_result && callback(trans_result.map(({ dst }) => dst).join('').replace(/\n/g, ''));
-  } else {
-    const error = ErrorText[error_code];
-    if (error) {
-      callback(error.message || error.title);
-
-      if (error_code === '52003') {
-        showDialog({ param: userConfig });
-      }
-    }
-
-    if (error_code === '52001' && retryCount < 3) {
-      // 翻译超时，重试
-      baiduTranslate(conditionText, callback);
-      retryCount += 1;
-    }
-  }
-}
 
 function showDialog(param?: { path?: string, param?: any }, windowOption?: BrowserWindowConstructorOptions) {
   const defaultParam = Object.assign({}, {

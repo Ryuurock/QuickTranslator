@@ -12,4 +12,5 @@ interface IBaiduResponse {
     dst: string,
   }>,
   error_code?: string,
+  error_msg?: string,
 }
