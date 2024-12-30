@@ -29,16 +29,10 @@ export const tencentTranslator = (SourceText: string, userConfig: IUserConfig) =
 
   const { to, from } = getTargetAndSource(SourceText)
 
-  console.log(SourceText)
-
   return client.TextTranslate({
     SourceText,
     Source: from,
     Target: to,
     ProjectId: 0
-  }).then((data) => {
-    return data.TargetText
-  }).catch((e) => {
-    return e.toString()
-  })
+  }).then((data) => data.TargetText).catch((e) => e.message)
 }
