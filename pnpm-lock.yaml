@@ -87,7 +87,7 @@ devDependencies:
     specifier: ^5.5.0
     version: 5.5.4(webpack@5.89.0)
   md5:
-    specifier: ^2.2.1
+    specifier: ^2.3.0
     version: 2.3.0
   mini-css-extract-plugin:
     specifier: ^2.4.5
